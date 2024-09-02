@@ -1,8 +1,8 @@
 com\keysindicator\demo\utils\TrayUtils.class
 com\keysindicator\demo\utils\CustomScreen$MouseAdapter.class
-com\keysindicator\demo\HelloApplication.class
 com\keysindicator\demo\KeysController.class
-com\keysindicator\demo\HelloController.class
+com\keysindicator\demo\KeysIndicatorApplication.class
+com\keysindicator\demo\MainController.class
 module-info.class
 com\keysindicator\demo\utils\MyKeyboard.class
 com\keysindicator\demo\utils\CustomScreen$KeyAdapter.class

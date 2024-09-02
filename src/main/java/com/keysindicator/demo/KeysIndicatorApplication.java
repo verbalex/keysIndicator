@@ -1,6 +1,5 @@
 package com.keysindicator.demo;
 
-import com.keysindicator.demo.utils.CustomScreen;
 import com.keysindicator.demo.utils.MyKeyboard;
 import com.keysindicator.demo.utils.Property;
 import com.keysindicator.demo.utils.TrayUtils;
@@ -15,19 +14,19 @@ import org.jnativehook.NativeHookException;
 import javax.swing.*;
 import java.io.IOException;
 
-public class HelloApplication extends Application {
+public class KeysIndicatorApplication extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
         new Property();
         Platform.setImplicitExit(false);
-        FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(KeysIndicatorApplication.class.getResource("main-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();
         new TrayUtils(stage);
-        HelloController helloController = fxmlLoader.getController();
+        MainController mainController = fxmlLoader.getController();
 
         SwingUtilities.invokeLater(() -> {
             try {
@@ -37,7 +36,7 @@ public class HelloApplication extends Application {
                 System.err.println(ex.getMessage());
                 System.exit(1);
             }
-            GlobalScreen.addNativeKeyListener(new MyKeyboard(helloController));
+            GlobalScreen.addNativeKeyListener(new MyKeyboard(mainController));
         });
 
     }

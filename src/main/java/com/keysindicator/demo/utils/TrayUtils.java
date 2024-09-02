@@ -1,14 +1,11 @@
 package com.keysindicator.demo.utils;
 
-import com.keysindicator.demo.HelloApplication;
-import javafx.application.Application;
+import com.keysindicator.demo.KeysIndicatorApplication;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.net.URL;
-import java.util.function.Function;
 
 public class TrayUtils {
 
@@ -23,7 +20,7 @@ public class TrayUtils {
             return;
         }
         final PopupMenu popup = new PopupMenu();
-        URL url = HelloApplication.class.getResource("/images/icon.png");
+        URL url = KeysIndicatorApplication.class.getResource("/images/icon.png");
         Image image = Toolkit.getDefaultToolkit().getImage(url);
         final TrayIcon trayIcon = new TrayIcon(image);
         final SystemTray tray = SystemTray.getSystemTray();

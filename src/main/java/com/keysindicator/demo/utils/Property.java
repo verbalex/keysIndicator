@@ -1,8 +1,9 @@
 package com.keysindicator.demo.utils;
 
-import com.keysindicator.demo.HelloApplication;
+import com.keysindicator.demo.KeysIndicatorApplication;
 
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Properties;
@@ -10,6 +11,7 @@ import java.util.Properties;
 public class Property {
 
     private final Properties property = new Properties();
+    URL propertyPath;
     private int keysTextX;
     private int keysTextY;
     private String labelColor;
@@ -20,9 +22,9 @@ public class Property {
         loadConfig();
     }
 
-    public void loadConfig() {
+    private void loadConfig() {
         try {
-            URL propertyPath = HelloApplication.class.getResource("/config/config.properties");
+            propertyPath = KeysIndicatorApplication.class.getResource("/config/config.properties");
             FileInputStream fis = new FileInputStream(propertyPath.getPath());
             property.load(fis);
 
@@ -39,20 +41,43 @@ public class Property {
         }
     }
 
+    public void saveConfig() throws IOException {
+        property.setProperty("keysText.x", String.valueOf(keysTextX));
+        property.setProperty("keysText.y", String.valueOf(keysTextY));
+        property.setProperty("label.color", labelColor);
+        property.setProperty("label.opacity", String.valueOf(labelOpacity));
+        property.store(new FileOutputStream(propertyPath.getPath()), null);
+    }
+
     public int getKeysTextX() {
         return keysTextX;
+    }
+
+    public void setKeysTextX(int keysTextX) {
+        this.keysTextX = keysTextX;
     }
 
     public int getKeysTextY() {
         return keysTextY;
     }
 
+    public void setKeysTextY(int keysTextY) {
+        this.keysTextY = keysTextY;
+    }
+
     public String getLabelColor() {
         return labelColor;
+    }
+
+    public void setLabelColor(String labelColor) {
+        this.labelColor = labelColor;
     }
 
     public float getLabelOpacity() {
         return labelOpacity;
     }
 
+    public void setLabelOpacity(float labelOpacity) {
+        this.labelOpacity = labelOpacity;
+    }
 }
