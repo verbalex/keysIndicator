@@ -6,7 +6,10 @@ import com.keysindicator.demo.KeysController;
 import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import org.jnativehook.keyboard.NativeKeyEvent;
@@ -16,27 +19,32 @@ import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class MyKeyboard implements NativeKeyListener {
 
     MainController mainController;
+    private Stage primaryStage;
     Set<Integer> keySetPressed = new HashSet<>();
     Set<Integer> keySetReleased = new HashSet<>();
+    LinkedList<Integer> keysPressedOrder = new LinkedList<>();
 
     public MyKeyboard() {
         // Now press any keys and look at the output
     }
 
-    public MyKeyboard(MainController mainController) {
+    public MyKeyboard(MainController mainController, Stage primaryStage) {
         this.mainController = mainController;
+        this.primaryStage = primaryStage;
     }
 
     @Override
     public void nativeKeyPressed(NativeKeyEvent e) {
         System.out.println("Pressed: " + NativeKeyEvent.getKeyText(e.getKeyCode()));
         keySetPressed.add(e.getKeyCode());
+        keysPressedOrder.add(e.getKeyCode());
         //showWindowWithText(NativeKeyEvent.getKeyText(e.getKeyCode()));
     }
 
@@ -52,45 +60,14 @@ public class MyKeyboard implements NativeKeyListener {
         keySetReleased.add(nke.getKeyCode());
         if (keySetReleased.containsAll(keySetPressed)) {
 
-            Set<String> keySetReleasedString = keySetReleased.stream().
-                    sorted(Integer::compareTo).
-                    map(NativeKeyEvent::getKeyText).
-                    collect(Collectors.toSet());
-
+            LinkedList<String> keySetReleasedString = new LinkedList<>();
+            keysPressedOrder.forEach(k -> {keySetReleasedString.add(NativeKeyEvent.getKeyText(k));});
             showWindowWithText(String.join("+", keySetReleasedString));
             //showWindowWithTextUsingJFrame(String.join("+", keySetReleasedString));
             keySetReleased.clear();
             keySetPressed.clear();
+            keysPressedOrder.clear();
         }
-    }
-
-    private void showWindowWithText(String text) {
-        Platform.runLater(()-> {
-            Property property = new Property();
-            FXMLLoader fxmlLoader = new FXMLLoader(KeysIndicatorApplication.class.getResource("keys-view.fxml"));
-            Scene scene = null;
-            try {
-                scene = new Scene(fxmlLoader.load(), Math.max(4,(text.length())) * 25, 60);
-                scene.setFill(Color.rgb(255,255,255, 0));
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-
-            Stage stage = new Stage();
-            stage.setTitle(text);
-            stage.setScene(scene);
-            stage.initStyle(StageStyle.TRANSPARENT);
-            stage.setAlwaysOnTop(true);
-            stage.setX(property.getKeysTextX());
-            stage.setY(property.getKeysTextY());
-            stage.show();
-            KeysController keysController = fxmlLoader.getController();
-            try {
-                keysController.initialize(text, stage);
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
-            }
-        });
     }
 
     private void showWindowWithTextUsingJFrame(String text) {
@@ -109,6 +86,36 @@ public class MyKeyboard implements NativeKeyListener {
         myFrame.setLocationByPlatform(true);
         myFrame.setVisible(true);
 
+    }
+
+    private void showWindowWithText(String text) {
+        Platform.runLater(() -> {
+            Property property = new Property();
+            final Stage dialog = new Stage();
+            dialog.initModality(Modality.APPLICATION_MODAL);
+            dialog.initOwner(primaryStage);
+            dialog.initStyle(StageStyle.TRANSPARENT);
+            dialog.setAlwaysOnTop(true);
+            dialog.setX(property.getKeysTextX());
+            dialog.setY(property.getKeysTextY());
+
+            FXMLLoader fxmlLoader = new FXMLLoader(KeysIndicatorApplication.class.getResource("keys-view.fxml"));
+            Scene scene = null;
+            try {
+                scene = new Scene(fxmlLoader.load(), Math.max(4,(text.length())) * 30, 60);
+                scene.setFill(Color.rgb(255,255,255, 0));
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+            dialog.setScene(scene);
+            dialog.show();
+            KeysController keysController = fxmlLoader.getController();
+            try {
+                keysController.initialize(text, dialog);
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
     }
 
 

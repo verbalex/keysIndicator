@@ -36,7 +36,7 @@ public class KeysIndicatorApplication extends Application {
                 System.err.println(ex.getMessage());
                 System.exit(1);
             }
-            GlobalScreen.addNativeKeyListener(new MyKeyboard(mainController));
+            GlobalScreen.addNativeKeyListener(new MyKeyboard(mainController, stage));
         });
 
     }
